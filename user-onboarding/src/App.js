@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Form from './components/Form';
 import User from './components/User';
+import formSchema from './validation/formSchema';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
+import * as yup from 'yup';
 import './App.css';
 
 function App() {
@@ -9,30 +12,51 @@ function App() {
     name: '',
     email: '',
     password: '',
-    tos: {consent: false}
+    tos: false
   }
 
   const initialUserList = [];
 
+  const initialFormErrors = {
+    name: '',
+    email: '',
+    password: '',
+    tos: ''
+  }
+
   // State
   const [formValues, setFormValues] = useState(initialFormValues);
   const [userList, setUserList] = useState(initialUserList);
+  const [formErrors, setFormErrors] = useState(initialFormErrors);
 
   // Handlers
   const onChangeHandler = event => {
     const { name } = event.target;
     const { value } = event.target;
 
+    yup
+    .reach(formSchema, name)
+    .validate(value)
+    .then(resolve => {
+      setFormErrors({
+        ...formErrors,
+        [name]: ''
+      })
+    })
+    .catch(error => {
+      setFormErrors({
+        ...formErrors,
+        [name]: error.errors[0]
+      })
+    })
+
     setFormValues({...formValues, [name]: value});
   }
 
   const onCheckboxChange = event => {
-    const { name } = event.target;
-    const { checked } = event.target;
-
     setFormValues({
       ...formValues,
-      tos: { [name]: checked }
+      tos: event.target.checked
     })
   }
 
@@ -51,6 +75,7 @@ function App() {
       onChangeHandler={onChangeHandler}
       onSubmitHandler={onSubmitHandler}
       onCheckboxChange={onCheckboxChange}
+      errors={formErrors}
       />
 
       {userList.map(user => {

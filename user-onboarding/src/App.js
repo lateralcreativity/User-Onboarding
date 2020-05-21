@@ -15,7 +15,7 @@ function App() {
     tos: false
   }
 
-  const initialUserList = [];
+  const initialUsers = [];
 
   const initialFormErrors = {
     name: '',
@@ -26,10 +26,20 @@ function App() {
 
   // State
   const [formValues, setFormValues] = useState(initialFormValues);
-  const [userList, setUserList] = useState(initialUserList);
+  const [users, setUsers] = useState(initialUsers);
   const [formErrors, setFormErrors] = useState(initialFormErrors);
 
   // Handlers
+  const postNewUser = newUser => {
+    axios.post(`https://reqres.in/api/users`, newUser)
+    .then(resolve => {
+      setUsers([...users, resolve.data])
+    })
+    .catch(error => {
+      debugger
+    })
+  }
+
   const onChangeHandler = event => {
     const { name } = event.target;
     const { value } = event.target;
@@ -65,7 +75,7 @@ function App() {
 
     event.preventDefault()
 
-    setUserList([newUser, ...userList]);
+    postNewUser(newUser);
     setFormValues(initialFormValues);
   }
 
@@ -78,7 +88,7 @@ function App() {
       errors={formErrors}
       />
 
-      {userList.map(user => {
+      {users.map(user => {
         return (
           <User key={user.id} details={user} />
         )

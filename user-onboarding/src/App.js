@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Form from './components/Form';
 import User from './components/User';
 import formSchema from './validation/formSchema';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import * as yup from 'yup';
 import './App.css';
@@ -31,9 +30,9 @@ function App() {
 
   // Handlers
   const postNewUser = newUser => {
-    axios.post(`https://reqres.in/api/users`, newUser)
+    axios.post('https://reqres.in/api/users', newUser)
     .then(resolve => {
-      setUsers([...users, resolve.data])
+      setUsers([resolve.data, ...users])
     })
     .catch(error => {
       debugger
@@ -71,7 +70,7 @@ function App() {
   }
 
   const onSubmitHandler = event => {
-    const newUser = {...formValues, id: uuid()}
+    const newUser = {...formValues}
 
     event.preventDefault()
 

@@ -52,7 +52,7 @@ export default function Form(props) {
                     />
                 </label>
 
-                <button>Submit</button>
+                <button className="submit">Submit</button>
             </form>
         </div>
     )

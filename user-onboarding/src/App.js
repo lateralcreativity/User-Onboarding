@@ -73,6 +73,10 @@ function App() {
     const newUser = {...formValues}
 
     event.preventDefault()
+    
+    if(!formValues.name.trim() || !formValues.email.trim() || !formValues.password.trim() || !formValues.tos){
+      return
+    }
 
     postNewUser(newUser);
     setFormValues(initialFormValues);
